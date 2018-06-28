@@ -10,6 +10,6 @@ void ProgramReader::Load(const std::string &filename) {
     char ch;
 
     while (file >> std::noskipws >> ch) {
-        std::cout << std::hex << ch; // Or whatever
+        Program.push_back(ch);
     }
 }

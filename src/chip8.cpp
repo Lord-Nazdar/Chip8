@@ -8,23 +8,6 @@ void CHIP8::Init() {
 
     SP = 0;
     memset(stack, 0x0000, sizeof(uint16_t) * 24);
-
-    // Fill with some data
-    uint16_t c = 0x200;
-    memory[c++] = 0x60;
-    memory[c++] = 0xfe;
-    memory[c++] = 0x30;
-    memory[c++] = 0xff;
-    memory[c++] = 0x23;
-    memory[c++] = 0x00;
-    memory[c++] = 0x00;
-    memory[c++] = 0xE0;
-    memory[c++] = 0xFF;
-
-    memory[0x0300] = 0x00;
-    memory[0x0301] = 0xE0;
-    memory[0x0302] = 0x00;
-    memory[0x0303] = 0xEE;
 }
 
 bool CHIP8::Cycle() {
