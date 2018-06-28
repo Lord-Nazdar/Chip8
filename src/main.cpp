@@ -16,7 +16,9 @@ int main(int argc, char**argv) {
 
     chp.Init();
 
-    while (chp.Cycle()) {}
+    for (int i = 0; i < 2048; ++i) {
+        chp.Cycle();
+    }
 
     return 0;
 }

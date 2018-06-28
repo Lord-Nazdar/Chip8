@@ -3,6 +3,8 @@
 
 class CHIP8 {
 public:
+    ~CHIP8();
+
     void Init();
     bool Cycle();
     uint8_t memory[4096];

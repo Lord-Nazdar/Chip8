@@ -2,12 +2,30 @@
 #include <cstring>
 #include <iostream>
 
+CHIP8::~CHIP8() {
+    for(uint8_t y = 0; y < 32; ++y) {
+        for(uint8_t x = 0; x < 64; ++x) {
+            if (screen[x][y]) {
+                std::cout << "O";
+            }
+            else {
+                std::cout << ".";
+            }
+        }
+        std::cout << "\n";
+    }
+}
+
 void CHIP8::Init() {
     // Program memory starts at 0x200
     PC = 0x200;
 
     SP = 0;
     memset(stack, 0x0000, sizeof(uint16_t) * 24);
+
+
+    // Fill the initial part of the memory
+    *memory = [0xF0, 0x90, 0x90, 0x90, 0xF0];
 }
 
 bool CHIP8::Cycle() {
