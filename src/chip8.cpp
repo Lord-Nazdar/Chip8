@@ -1,6 +1,7 @@
 #include "chip8.h"
 #include <cstring>
 #include <iostream>
+#include "mem.h"
 
 CHIP8::~CHIP8() {
     for(uint8_t y = 0; y < 32; ++y) {
@@ -25,7 +26,23 @@ void CHIP8::Init() {
 
 
     // Fill the initial part of the memory
-    *memory = [0xF0, 0x90, 0x90, 0x90, 0xF0];
+    uint16_t ptr = 0x00;
+    memcpy(&memory[ptr], &font_0, FONT_SIZE);
+    memcpy(&memory[ptr += 0x05], &font_1, FONT_SIZE);
+    memcpy(&memory[ptr += 0x05], &font_2, FONT_SIZE);
+    memcpy(&memory[ptr += 0x05], &font_3, FONT_SIZE);
+    memcpy(&memory[ptr += 0x05], &font_4, FONT_SIZE);
+    memcpy(&memory[ptr += 0x05], &font_5, FONT_SIZE);
+    memcpy(&memory[ptr += 0x05], &font_6, FONT_SIZE);
+    memcpy(&memory[ptr += 0x05], &font_7, FONT_SIZE);
+    memcpy(&memory[ptr += 0x05], &font_8, FONT_SIZE);
+    memcpy(&memory[ptr += 0x05], &font_9, FONT_SIZE);
+    memcpy(&memory[ptr += 0x05], &font_A, FONT_SIZE);
+    memcpy(&memory[ptr += 0x05], &font_B, FONT_SIZE);
+    memcpy(&memory[ptr += 0x05], &font_C, FONT_SIZE);
+    memcpy(&memory[ptr += 0x05], &font_D, FONT_SIZE);
+    memcpy(&memory[ptr += 0x05], &font_E, FONT_SIZE);
+    memcpy(&memory[ptr += 0x05], &font_F, FONT_SIZE);
 }
 
 bool CHIP8::Cycle() {
