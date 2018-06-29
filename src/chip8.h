@@ -1,9 +1,14 @@
 #pragma once
 #include <cstdint>
+#include <random>
 
 class CHIP8 {
 public:
-    ~CHIP8();
+    CHIP8();
+
+
+    void PrintScreen();
+    void ShowDebug();
 
     void Init();
     bool Cycle();
@@ -16,8 +21,15 @@ private:
     uint16_t I;
     uint16_t PC;
 
+    uint16_t Opcode;
+
     bool screen[64][32];
 
     uint16_t stack[24];
     uint8_t SP;
+
+    // Setup for the random number generator
+    std::random_device rd;
+    std::mt19937 mt;
+    std::uniform_int_distribution<uint8_t> dist;
 };

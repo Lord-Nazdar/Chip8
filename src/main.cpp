@@ -1,5 +1,6 @@
 #include "chip8.h"
 #include "program-reader.h"
+#include <iostream>
 
 int main(int argc, char**argv) {
     // CHIP8 chip8;
@@ -16,9 +17,13 @@ int main(int argc, char**argv) {
 
     chp.Init();
 
-    for (int i = 0; i < 2048; ++i) {
-        chp.Cycle();
+    for (int i = 0; i < 1024; ++i) {
+        if(!chp.Cycle())
+            break;
+        std::cin.get();
     }
+
+    chp.PrintScreen();
 
     return 0;
 }
