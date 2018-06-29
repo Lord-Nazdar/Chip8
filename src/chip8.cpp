@@ -6,7 +6,7 @@
 CHIP8::CHIP8() {
     // Init the random device
     mt = std::mt19937(rd());
-    dist = std::uniform_int_distribution<uint8_t>(0, 255);
+    dist = std::uniform_int_distribution<unsigned short>(0, 255);
 }
 
 void CHIP8::PrintScreen() {

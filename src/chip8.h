@@ -31,5 +31,5 @@ private:
     // Setup for the random number generator
     std::random_device rd;
     std::mt19937 mt;
-    std::uniform_int_distribution<uint8_t> dist;
+    std::uniform_int_distribution<unsigned short> dist;
 };
