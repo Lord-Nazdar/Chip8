@@ -41,32 +41,6 @@ void CHIP8::Tick(const std::chrono::duration<double> &delta) {
     }
 }
 
-void CHIP8::PrintScreen() {
-    for(uint8_t y = 0; y < 32; ++y) {
-        for(uint8_t x = 0; x < 64; ++x) {
-            if (screen[x][y]) {
-                std::cout << "O";
-            }
-            else {
-                std::cout << ".";
-            }
-        }
-        std::cout << "\n";
-    }
-}
-
-void CHIP8::ShowDebug() {
-    std::cout << "--------------------------------" << std::endl;
-    std::cout << "Current location: 0x0" << std::hex << PC << std::endl;
-    std::cout << "Current opcode:   0x" << std::hex << Opcode << std::endl;
-    std::cout << "Registers V:" << std::endl;
-    std::cout << "0    1    2    3    4    5    6    7    8    9    10    11    12    13    14    F" << std::endl;
-    printf("0x%02x 0x%02x 0x%02x 0x%02x 0x%02x ", V[0], V[1], V[2], V[3], V[4]);
-    printf("0x%02x 0x%02x 0x%02x 0x%02x 0x%02x ", V[5], V[6], V[7], V[8], V[9]);
-    printf("0x%02x  0x%02x  0x%02x  0x%02x  0x%02x  0x%02x\n", V[10], V[11], V[12], V[13], V[14], VF);
-    std::cout << "--------------------------------" << std::endl;
-}
-
 const CHIP8_INFO CHIP8::GetInfo() const {
     CHIP8_INFO info;
 
@@ -128,9 +102,6 @@ bool CHIP8::Cycle() {
 
    Delay -= Delay != 0x00 ? 0x01 : 0x00;
    Sound -= Sound != 0x00 ? 0x01 : 0x00;
-
-
-    //ShowDebug();
 
     // Decode the opcode
     switch (Opcode & 0xF000) {
@@ -428,4 +399,8 @@ bool CHIP8::Cycle() {
     }
 
     return true;
+}
+
+void CHIP8::ClearMemory() {
+    memset(memory, 0x00, 4096);
 }

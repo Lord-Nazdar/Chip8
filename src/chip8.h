@@ -13,6 +13,25 @@ struct CHIP8_INFO {
     uint16_t Opcode;    // Opcode
 };
 
+enum E_KEYS {
+    KEY_0,
+    KEY_1,
+    KEY_2,
+    KEY_3,
+    KEY_4,
+    KEY_5,
+    KEY_6,
+    KEY_7,
+    KEY_8,
+    KEY_9,
+    KEY_A,
+    KEY_B,
+    KEY_C,
+    KEY_D,
+    KEY_E,
+    KEY_F
+};
+
 class CHIP8 {
 public:
     CHIP8();
@@ -20,6 +39,7 @@ public:
     void Tick(const std::chrono::duration<double> &delta);
 
     const CHIP8_INFO GetInfo() const;
+    void ClearMemory();
 
     double Elapsed;
     float ClockSpeed;
@@ -29,14 +49,11 @@ public:
 
     bool Blocked;
 
-
-    void PrintScreen();
-    void ShowDebug();
-
     void Init();
     bool Cycle();
 
     uint8_t memory[4096];
+
     
     bool Keys[16];
 

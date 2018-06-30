@@ -13,6 +13,7 @@
 
 #include <thread>
 #include <filesystem>
+#include <map>
 
 static MemoryEditor mem_edit_1;
 
@@ -81,8 +82,34 @@ void CHIP8Loop() {
     }
 }
 
+static std::map<int, E_KEYS> KeyMapping;
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (action == GLFW_PRESS || action == GLFW_RELEASE) {
+        chp.Keys[KeyMapping[key]] = action;
+    }
+}
+
 int main(void)
 {
+    KeyMapping[GLFW_KEY_X] = E_KEYS::KEY_0;
+    KeyMapping[GLFW_KEY_1] = E_KEYS::KEY_1;
+    KeyMapping[GLFW_KEY_2] = E_KEYS::KEY_2;
+    KeyMapping[GLFW_KEY_3] = E_KEYS::KEY_3;
+    KeyMapping[GLFW_KEY_A] = E_KEYS::KEY_4;
+    KeyMapping[GLFW_KEY_Z] = E_KEYS::KEY_5;
+    KeyMapping[GLFW_KEY_E] = E_KEYS::KEY_6;
+    KeyMapping[GLFW_KEY_Q] = E_KEYS::KEY_7;
+    KeyMapping[GLFW_KEY_S] = E_KEYS::KEY_8;
+    KeyMapping[GLFW_KEY_D] = E_KEYS::KEY_9;
+    KeyMapping[GLFW_KEY_W] = E_KEYS::KEY_A;
+    KeyMapping[GLFW_KEY_C] = E_KEYS::KEY_B;
+    KeyMapping[GLFW_KEY_4] = E_KEYS::KEY_C;
+    KeyMapping[GLFW_KEY_R] = E_KEYS::KEY_D;
+    KeyMapping[GLFW_KEY_F] = E_KEYS::KEY_E;
+    KeyMapping[GLFW_KEY_V] = E_KEYS::KEY_F;
+
     // CHIP8 chip8;
     
     // chip8.Init();
@@ -142,6 +169,8 @@ int main(void)
     auto start = std::chrono::system_clock::now();
 
     std::thread t(&CHIP8Loop);
+
+    glfwSetKeyCallback(window, key_callback);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -205,13 +234,21 @@ int main(void)
         {
             if (ImGui::BeginMenu("File"))
             {
-                std::string path = ".";
+                std::string path = "./GAMES";
                 for (auto & p : std::experimental::filesystem::directory_iterator(path)) {
                     auto path = p.path();
-                    ImGui::MenuItem(path.string().c_str());
+                    if (ImGui::MenuItem(path.string().c_str())) {
+                        chp.ClearMemory();
+                        pr.Load(path.string());
+                        for (uint16_t i = 0; i < pr.Program.size(); ++i) {
+                            chp.memory[0x200 + i] = pr.Program[i];
+                        }
+                        chp.Init();
+                    }
                 }
 
                 if (ImGui::MenuItem("PONG")) {
+                    chp.ClearMemory();
                     pr.Load("PONG.ch8");
                     for (uint16_t i = 0; i < pr.Program.size(); ++i) {
                         chp.memory[0x200 + i] = pr.Program[i];
@@ -220,6 +257,7 @@ int main(void)
                 }
 
                 if (ImGui::MenuItem("MAZE")) {
+                    chp.ClearMemory();
                     pr.Load("MAZE.ch8");
                     for (uint16_t i = 0; i < pr.Program.size(); ++i) {
                         chp.memory[0x200 + i] = pr.Program[i];
