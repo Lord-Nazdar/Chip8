@@ -3,6 +3,8 @@
 #include <random>
 #include <chrono>
 
+#include <mutex>
+
 struct CHIP8_INFO {
     uint8_t V[15];      // Working registers
     uint8_t VF;         // Flag register
@@ -36,10 +38,12 @@ class CHIP8 {
 public:
     CHIP8();
 
-    void Tick(const std::chrono::duration<double> &delta);
+    std::mutex DataGuard;
 
-    const CHIP8_INFO GetInfo() const;
+
+    void Tick(const double delta);
     void ClearMemory();
+    const CHIP8_INFO GetInfo() const;
 
     double Elapsed;
     float ClockSpeed;

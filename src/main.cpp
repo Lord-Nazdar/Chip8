@@ -51,6 +51,8 @@ void ShowRegisterWindow(bool *open, const CHIP8_INFO &info) {
     ImGui::End();
 }
 
+static bool PrevScreen[64][32];
+
 void ShowScreen(bool *open, const CHIP8 &chp) {
     ImGui::Begin("Screen", open);
     ImDrawList* draw_list = ImGui::GetWindowDrawList();
@@ -62,7 +64,12 @@ void ShowScreen(bool *open, const CHIP8 &chp) {
 
     for (int y = 0; y < 32; ++y) {
         for (int x = 0; x < 64; ++x) {
-            draw_list->AddRectFilled(ImVec2(p.x + x * (width), p.y + y * (width)), ImVec2(p.x + x * (width)+8.0f, p.y + y * (width)+8.0f), ImColor(chp.screen[x][y] ? black : white), 0.0f);
+            draw_list->AddRectFilled(
+                ImVec2(p.x + x * (width), p.y + y * (width)),
+                ImVec2(p.x + x * (width)+8.0f, p.y + y * (width)+8.0f),
+                ImColor(chp.screen[x][y] ? black : ImColor(PrevScreen[x][y] ? black : white)),
+                0.0f
+            );
         }
     }
     ImGui::End();
@@ -71,14 +78,13 @@ void ShowScreen(bool *open, const CHIP8 &chp) {
 CHIP8 chp;
 
 void CHIP8Loop() {
-    auto start = std::chrono::system_clock::now();
+    auto start = std::chrono::high_resolution_clock::now();
     while (true) {
-        auto end = std::chrono::system_clock::now();
         if (FreeRunning) {
-
-            chp.Tick(end - start);
+            std::chrono::duration<float> temp = std::chrono::high_resolution_clock::now() - start;
+            chp.Tick(temp.count());
         }
-        start = std::chrono::system_clock::now();
+        std::this_thread::sleep_for(std::chrono::microseconds(200));
     }
 }
 
@@ -192,14 +198,17 @@ int main(void)
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
+        {
+            chp.DataGuard.lock();
+            if (show_another_window) {
+                ShowRegisterWindow(&show_another_window, info);
+            }
 
-        if (show_another_window) {
-            ShowRegisterWindow(&show_another_window, info);
-        }
 
-
-        if (show_another_window) {
-            ShowScreen(&show_another_window, chp);
+            if (show_another_window) {
+                ShowScreen(&show_another_window, chp);
+            }
+            chp.DataGuard.unlock();
         }
 
         ImGui::ShowDemoWindow(&show_demo_window);

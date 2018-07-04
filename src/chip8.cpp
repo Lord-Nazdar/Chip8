@@ -27,15 +27,15 @@ CHIP8::CHIP8() {
     SP = 0x00;
 
     // Set clock speed to 20Hz
-    ClockSpeed = 1000;
+    ClockSpeed = 0.002f;
     Elapsed = 0.0f;
 }
 
-void CHIP8::Tick(const std::chrono::duration<double> &delta) {
-    Elapsed += delta.count();
+void CHIP8::Tick(const double delta) {
+    Elapsed += delta;
 
     if (Elapsed > ClockSpeed) {
-        Elapsed = 0;
+        Elapsed = 0.0f;
 
         Cycle();
     }
@@ -102,6 +102,8 @@ bool CHIP8::Cycle() {
 
    Delay -= Delay != 0x00 ? 0x01 : 0x00;
    Sound -= Sound != 0x00 ? 0x01 : 0x00;
+
+   std::lock_guard<std::mutex> guard(DataGuard);
 
     // Decode the opcode
     switch (Opcode & 0xF000) {
